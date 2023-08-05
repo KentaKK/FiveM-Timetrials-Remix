@@ -36,6 +36,7 @@ function preRace()
     raceState.startTime = 0
     raceState.blip = nil
     raceState.checkpoint = nil
+
     
     -- While player is not racing
     while raceState.index == 0 do
@@ -52,10 +53,10 @@ function preRace()
             if DoesBlipExist(waypoint) then 
                 -- Teleport to location, wait 100ms to load then get ground coordinate
                 local coords = GetBlipInfoIdCoord(waypoint)
-                teleportToCoord(coords.x, coords.y, coords.z, 0)
+                --teleportToCoord(coords.x, coords.y, coords.z, 0)
                 Citizen.Wait(100)
                 local temp, zCoord = GetGroundZFor_3dCoord(coords.x, coords.y, 9999.9, 1)
-                teleportToCoord(coords.x, coords.y, zCoord + 4.0, 0)
+                --teleportToCoord(coords.x, coords.y, zCoord + 4.0, 0)
             end
         end
 
@@ -149,7 +150,7 @@ AddEventHandler("raceCountdown", function()
     local race = races[raceState.index]
     
     -- Teleport player to start and set heading
-    teleportToCoord(race.start.x, race.start.y, race.start.z + 4.0, race.start.heading)
+    --teleportToCoord(race.start.x, race.start.y, race.start.z + 4.0, race.start.heading)
     
     Citizen.CreateThread(function()
         -- Countdown timer
@@ -208,7 +209,7 @@ AddEventHandler("raceRaceActive", function()
                 
                 -- Set new waypoint and teleport to the same spot 
                 SetNewWaypoint(race.start.x, race.start.y)
-                teleportToCoord(race.start.x, race.start.y, race.start.z + 4.0, race.start.heading)
+                --teleportToCoord(race.start.x, race.start.y, race.start.z + 4.0, race.start.heading)
                 
                 -- Clear racing index and break
                 raceState.index = 0
@@ -234,6 +235,12 @@ AddEventHandler("raceRaceActive", function()
                     -- Save time and play sound for finish line
                     local finishTime = (GetGameTimer() - raceState.startTime)
                     PlaySoundFrontend(-1, "ScreenFlash", "WastedSounds")
+                    TriggerServerEvent('ak4y-blackmarket:addXP', 200)
+                    TriggerServerEvent('ak4y-blackmarket:taskCountAdd', 3, 1)
+                    TriggerServerEvent('rewardsystem:triggerReward', "default")
+                    exports.xperience:AddXP(200)
+                    -- Player.Functions.AddMoney('bank', "50000")
+
                     
                     -- Get vehicle name and create score
                     local aheadVehHash = GetEntityModel(GetVehiclePedIsUsing(GetPlayerPed(-1)))
@@ -352,3 +359,7 @@ function DrawHudText(text,colour,coordsx,coordsy,scalex,scaley)
     AddTextComponentString(text)
     DrawText(coordsx,coordsy)
 end
+
+exports("GetRaceState", function()
+    return raceState
+end)

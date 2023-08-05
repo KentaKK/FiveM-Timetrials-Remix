@@ -62,8 +62,10 @@ AddEventHandler('racePlayerFinished', function(source, message, title, newScore)
             msgSource = -1
             msgAppend = " (fastest)"
             msgColor = color_highscore
+            --TriggerServerEvent('ak4y-blackmarket:addXP', 5000)
         end
         raceScores[carName] = topScore
+        --TriggerServerEvent('ak4y-blackmarket:addXP', 200)
     else
         -- No scores for this race, create struct and set new high score
         raceScores = {}
