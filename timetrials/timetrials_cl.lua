@@ -235,10 +235,6 @@ AddEventHandler("raceRaceActive", function()
                     -- Save time and play sound for finish line
                     local finishTime = (GetGameTimer() - raceState.startTime)
                     PlaySoundFrontend(-1, "ScreenFlash", "WastedSounds")
-                    TriggerServerEvent('ak4y-blackmarket:addXP', 200)
-                    TriggerServerEvent('ak4y-blackmarket:taskCountAdd', 3, 1)
-                    TriggerServerEvent('rewardsystem:triggerReward', "default")
-                    exports.xperience:AddXP(200)
                     -- Player.Functions.AddMoney('bank', "50000")
 
                     
