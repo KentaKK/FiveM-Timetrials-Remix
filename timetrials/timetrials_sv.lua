@@ -25,7 +25,7 @@ function getScores()
     local file = io.open(scoreFileName, "r")
     if file then
         -- read all contents of file into a string
-        local contents = file:read("*a")
+        contents = file:read("*a")
         myTable = json.decode(contents);
         io.close( file )
         return myTable
@@ -34,15 +34,15 @@ function getScores()
 end
 
 -- Create thread to send scores to clients every 5s
-Citizen.CreateThread(function()
+CreateThread(function()
     while (true) do
-        Citizen.Wait(5000)
+        Wait(10000)
         TriggerClientEvent('raceReceiveScores', -1, getScores())
     end
 end)
 
 -- Save score and send chat message when player finishes
-RegisterServerEvent('racePlayerFinished')
+RegisterNetEvent('racePlayerFinished')
 AddEventHandler('racePlayerFinished', function(source, message, title, newScore)
     -- Get top car score for this race
     local msgAppend = ""
@@ -57,7 +57,6 @@ AddEventHandler('racePlayerFinished', function(source, message, title, newScore)
         if topScore == nil or newScore.time < topScore.time then
             -- Set new high score
             topScore = newScore
-            
             -- Set message parameters to send to all players for high score
             msgSource = -1
             msgAppend = " (fastest)"
@@ -70,17 +69,14 @@ AddEventHandler('racePlayerFinished', function(source, message, title, newScore)
         -- No scores for this race, create struct and set new high score
         raceScores = {}
         raceScores[newScore.car] = newScore
-        
         -- Set message parameters to send to all players for high score
         msgSource = -1
         msgAppend = " (fastest)"
         msgColor = color_highscore
     end
-    
     -- Save and store scores back to file
     allScores[title] = raceScores
     saveScores(allScores)
-    
     -- Trigger message to all players
     TriggerClientEvent('chatMessage', -1, "[RACE]", msgColor, message .. msgAppend)
 end)
